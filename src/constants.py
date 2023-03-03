@@ -37,15 +37,15 @@ class ConstantsParam:
     def __repr__(self) -> str:
         return json.dumps(self.__json__(), indent=2)
 
-    def __eq__(self, __o: 'ConstantsParam') -> bool:
+    def __eq__(self, other: 'ConstantsParam') -> bool:
         for key in ConstantsParam.Keys:
-            if getattr(self, key) != getattr(__o, key):
+            if getattr(self, key) != getattr(other, key):
                 return False
         return True
 
-    def __sub__(self, __o: 'ConstantsParam') -> dict:
+    def __sub__(self, other: 'ConstantsParam') -> dict:
         d = {}
         for key in ConstantsParam.Keys:
-            if getattr(self, key) != getattr(__o, key):
-                d[key] = getattr(self, key) - getattr(__o, key)
+            if getattr(self, key) != getattr(other, key):
+                d[key] = getattr(self, key) - getattr(other, key)
         return d

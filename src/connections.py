@@ -33,17 +33,17 @@ class ConnectionParam_source:
     def __repr__(self):
         return json.dumps(self.__json__(), indent=2)
 
-    def __eq__(self, __o: 'ConnectionParam_source') -> bool:
+    def __eq__(self, other: 'ConnectionParam_source') -> bool:
         for key in ConnectionParam_source.Keys:
-            if getattr(self, key) != getattr(__o, key):
+            if getattr(self, key) != getattr(other, key):
                 return False
         return True
 
-    def __sub__(self, __o: 'ConnectionParam_source') -> dict:
+    def __sub__(self, other: 'ConnectionParam_source') -> dict:
         d = {}
         for key in ConnectionParam_source.Keys:
-            if getattr(self, key) != getattr(__o, key):
-                d[key] = getattr(self, key) - getattr(__o, key)
+            if getattr(self, key) != getattr(other, key):
+                d[key] = getattr(self, key) - getattr(other, key)
         return d
 
 
@@ -81,15 +81,16 @@ class ConnectionParam:
     def __repr__(self):
         return json.dumps(self.__json__(), indent=2)
 
-    def __eq__(self, __o: 'ConnectionParam') -> bool:
+    def __eq__(self, other: 'ConnectionParam') -> bool:
         for key in ConnectionParam.Keys:
-            if getattr(self, key) != getattr(__o, key):
+            if getattr(self, key) != getattr(other, key):
                 return False
         return True
 
-    def __sub__(self, __o: 'ConnectionParam') -> dict:
+    def __sub__(self, other: 'ConnectionParam') -> dict:
         d = {}
         for key in ConnectionParam.Keys:
-            if getattr(self, key) != getattr(__o, key):
-                d[key] = getattr(self, key) - getattr(__o, key)
+            if getattr(self, key) != getattr(other, key):
+                d[key] = getattr(self, key) - getattr(other, key)
         return d
+

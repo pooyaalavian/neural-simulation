@@ -14,7 +14,7 @@ class NodeParamIback:
         if type(d) in [float, int]:
             dc_val = d
             d = {}
-        self.type = d.get('type', None)
+        self.type = d.get('type', 'dc')
         self.amplitude: np.float64 = zero + d.get('amplitude', 0.0)
         self.frequency: np.float64 = zero + d.get('frequency', 0.0)
         self.phase: np.float64 = zero + d.get('phase', 0.0)
@@ -41,17 +41,22 @@ class NodeParamIback:
     def __repr__(self):
         return json.dumps(self.__json__(), indent=2)
 
-    def __eq__(self, __o: 'NodeParamIback') -> bool:
+    def __eq__(self, other: 'NodeParamIback') -> bool:
         for key in NodeParamIback.Keys:
-            if getattr(self, key) != getattr(__o, key):
+            if getattr(self, key) != getattr(other, key):
                 return False
         return True
 
-    def __sub__(self, __o: 'NodeParamIback') -> dict:
+    def __sub__(self, other: 'NodeParamIback') -> dict:
         d = {}
         for key in NodeParamIback.Keys:
-            if getattr(self, key) != getattr(__o, key):
-                d[key] = getattr(self, key) - getattr(__o, key)
+            current = getattr(self, key)
+            old = getattr(other, key)
+            if current != old:
+                if type(current) in [str, None]:
+                    d[key] = current
+                else:
+                    d[key] =  current - old
         return d
 
 
@@ -66,7 +71,7 @@ class NodeParamIext:
             dc_val = d
             d = {}
         # we use += to make sure number are all np.float64
-        self.type = d.get('type', None)
+        self.type = d.get('type', 'dc')
         self.height: np.float64 = zero + d.get('height', dc_val)
         self.t_start: np.float64 = zero + d.get('t_start', 0.0)
         self.t_end: np.float64 = zero + d.get('t_end', 0.0)
@@ -91,17 +96,17 @@ class NodeParamIext:
     def __repr__(self):
         return json.dumps(self.__json__(), indent=2)
 
-    def __eq__(self, __o: 'NodeParamIext') -> bool:
+    def __eq__(self, other: 'NodeParamIext') -> bool:
         for key in NodeParamIext.Keys:
-            if getattr(self, key) != getattr(__o, key):
+            if getattr(self, key) != getattr(other, key):
                 return False
         return True
 
-    def __sub__(self, __o: 'NodeParamIext') -> dict:
+    def __sub__(self, other: 'NodeParamIext') -> dict:
         d = {}
         for key in NodeParamIext.Keys:
-            if getattr(self, key) != getattr(__o, key):
-                d[key] = getattr(self, key) - getattr(__o, key)
+            if getattr(self, key) != getattr(other, key):
+                d[key] = getattr(self, key) - getattr(other, key)
         return d
 
 
@@ -137,15 +142,15 @@ class NodeParam:
     def __repr__(self):
         return json.dumps(self.__json__(), indent=2)
 
-    def __eq__(self, __o: 'NodeParam') -> bool:
+    def __eq__(self, other: 'NodeParam') -> bool:
         for key in NodeParam.Keys:
-            if getattr(self, key) != getattr(__o, key):
+            if getattr(self, key) != getattr(other, key):
                 return False
         return True
 
-    def __sub__(self, __o: 'NodeParam') -> dict:
+    def __sub__(self, other: 'NodeParam') -> dict:
         d = {}
         for key in NodeParam.Keys:
-            if getattr(self, key) != getattr(__o, key):
-                d[key] = getattr(self, key) - getattr(__o, key)
+            if getattr(self, key) != getattr(other, key):
+                d[key] = getattr(self, key) - getattr(other, key)
         return d
