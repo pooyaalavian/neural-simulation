@@ -53,5 +53,11 @@ To save your parameters after modification into a file, use this:
 ```py
 # first change a parameter
 p.exc1.tau=99
-# then saved the modified parameterset
+# then save the modified parameterset
 p.save('new-param.json')
+```
+
+If you want to save only the changes compared to default, use:
+```py
+p.saveDelta('new-param.json')
+```
