@@ -1,0 +1,94 @@
+{
+    "exc1":{
+        "tau":0.5,
+        "sigma":0.5,
+        "gamma":0.5,
+        "tau_ampa":0.5,
+        "sigma_ampa":0.5,
+        "gamma_ampa":0.5,
+        "I_back": {
+            "type":"sin",
+            "amplitude":0.48,
+            "frequency":0.5,
+            "phase":0,
+            "dc":0
+        },
+        "I_ext": {
+            "type":"rectangular",
+            "height":0.48,
+            "t_start":0,
+            "t_end":10
+        }
+    },
+    "J":{
+        "exc1":{
+            "exc1":0,
+            "exc2":0,
+            "pv":0, 
+            "sst1":0,
+            "sst2":0,
+            "vip1":0,
+            "vip2":0
+        },
+        "exc2":{
+            "exc1":0,
+            "exc2":0,
+            "pv":0,
+            "sst1":0,
+            "sst2":0,
+            "vip1":0,
+            "vip2":0
+        },
+        "pv":{
+            "exc1":0, 
+            "exc2":0, 
+            "pv":0,
+            "sst1":0,
+            "sst2":0,
+            "vip1":0,
+            "vip2":0
+        }
+    },
+    "J_AMPA": {
+        "exc1":{
+            "exc1":0,
+            "exc2":0
+        },
+        "exc2":{
+            "exc1":0,
+            "exc2":0
+        },
+        "pv":{
+            "exc1":0,
+            "exc2":0
+        },
+        "sst1":{
+            "exc1":0,
+            "exc2":0
+        },
+        "sst2":{
+            "exc1":0,
+            "exc2":0
+        },
+        "vip1":{
+            "exc1":0,
+            "exc2":0
+        },
+        "vip2":{
+            "exc1":0,
+            "exc2":0
+        }
+    },
+
+    "constants": {
+        "tau_r":1,
+        "tau_n":1,
+        "a": 135,
+        "b": 54,
+        "d": 0.308,
+        "g_I": 4,
+        "c_1": 615,
+        "c_0": 177,
+        "r_0": 5.5
+    }
+}

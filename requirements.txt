@@ -1,0 +1,9 @@
+jupyter
+notebook
+numpy
+pandas
+scipy
+pytictoc
+matplotlib
+mpl_toolkits
+sdeint
