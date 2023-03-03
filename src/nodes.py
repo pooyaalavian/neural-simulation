@@ -1,80 +1,56 @@
-import json
 import numpy as np
+from src.mixin import Mixin
 
 zero = np.float64(0.0)
 
 
-class NodeParamIback:
+class NodeParamIback (Mixin):
     Keys = ['type', 'amplitude', 'frequency', 'phase', 'dc']
 
-    def __init__(self, d: dict | float):
-        dc_val = 0.0
+    def __init__(self, d: dict | float, *, delta=False):
+        self.__delta=delta
+        dc_val = None
         if d is None:
             d = {}
         if type(d) in [float, int]:
             dc_val = d
             d = {}
-        self.type = d.get('type', 'dc')
-        self.amplitude: np.float64 = zero + d.get('amplitude', 0.0)
-        self.frequency: np.float64 = zero + d.get('frequency', 0.0)
-        self.phase: np.float64 = zero + d.get('phase', 0.0)
-        self.dc: np.float64 = zero + d.get('dc', dc_val)
+        self.type = d.get('type', None)
+        self.amplitude = self.__npget__(d,'amplitude',delta = self.__delta)
+        self.frequency = self.__npget__(d,'frequency',delta = self.__delta)
+        self.phase = self.__npget__(d,'phase',delta = self.__delta)
+        self.dc = self.__npget__(d,'dc',delta = self.__delta)
+        if dc_val is not None:
+            self.dc = dc_val
+
         return
 
     def value(self, t) -> np.float64:
         if self.type == "sin":
-            return self.amplitude*np.sin(2*np.pi*self.frequency*t+self.phase)+self.dc
+            return self.amplitude * np.sin(2 * np.pi * self.frequency * t + self.phase) + self.dc
         elif self.type == "dc":
             return self.dc
         else:
             return self.dc
 
-    def __json__(self):
-        return {
-            "type": self.type,
-            "amplitude": self.amplitude,
-            "frequency": self.frequency,
-            "phase": self.phase,
-            "dc": self.dc,
-        }
 
-    def __repr__(self):
-        return json.dumps(self.__json__(), indent=2)
-
-    def __eq__(self, other: 'NodeParamIback') -> bool:
-        for key in NodeParamIback.Keys:
-            if getattr(self, key) != getattr(other, key):
-                return False
-        return True
-
-    def __sub__(self, other: 'NodeParamIback') -> dict:
-        d = {}
-        for key in NodeParamIback.Keys:
-            current = getattr(self, key)
-            old = getattr(other, key)
-            if current != old:
-                if type(current) in [str, None]:
-                    d[key] = current
-                else:
-                    d[key] =  current - old
-        return d
-
-
-class NodeParamIext:
+class NodeParamIext(Mixin):
     Keys = ['type', 'height', 't_start', 't_end']
 
-    def __init__(self, d: dict | float):
-        dc_val = 0.0
+    def __init__(self, d: dict | float, *, delta=False):
+        self.__delta = delta
+        dc_val = None
         if d is None:
             d = {}
         if type(d) in [float, int]:
             dc_val = d
             d = {}
-        # we use += to make sure number are all np.float64
-        self.type = d.get('type', 'dc')
-        self.height: np.float64 = zero + d.get('height', dc_val)
-        self.t_start: np.float64 = zero + d.get('t_start', 0.0)
-        self.t_end: np.float64 = zero + d.get('t_end', 0.0)
+        self.type = d.get('type', None)
+        self.height = self.__npget__(d, 'height', self.__delta)
+        self.t_start = self.__npget__(d, 't_start', self.__delta)
+        self.t_end = self.__npget__(d, 't_end', self.__delta)
+        if dc_val is not None:
+            self.height = dc_val
 
     def value(self, t) -> np.float64:
         if self.type == "rectangular":
@@ -85,72 +61,21 @@ class NodeParamIext:
         else:
             return zero
 
-    def __json__(self):
-        return {
-            "type": self.type,
-            "height": self.height,
-            "t_start": self.t_start,
-            "t_end": self.t_end,
-        }
 
-    def __repr__(self):
-        return json.dumps(self.__json__(), indent=2)
-
-    def __eq__(self, other: 'NodeParamIext') -> bool:
-        for key in NodeParamIext.Keys:
-            if getattr(self, key) != getattr(other, key):
-                return False
-        return True
-
-    def __sub__(self, other: 'NodeParamIext') -> dict:
-        d = {}
-        for key in NodeParamIext.Keys:
-            if getattr(self, key) != getattr(other, key):
-                d[key] = getattr(self, key) - getattr(other, key)
-        return d
-
-
-class NodeParam:
+class NodeParam(Mixin):
     Keys = ['tau', 'sigma', 'gamma', 'tau_ampa',
             'sigma_ampa', 'gamma_ampa', 'I_back', 'I_ext']
 
-    def __init__(self, d: dict):
+    def __init__(self, d: dict, *, delta=False):
+        self.__delta = delta
         if d is None:
             d = {}
-        self.tau = zero + d.get('tau', 0.0)
-        self.sigma = zero + d.get('sigma', 0.0)
-        self.gamma = zero + d.get('gamma', 0.0)
-        self.tau_ampa = zero + d.get('tau_ampa', 0.0)
-        self.sigma_ampa = zero + d.get('sigma_ampa', 0.0)
-        self.gamma_ampa = zero + d.get('gamma_ampa', 0.0)
-        self.I_back = NodeParamIback(d.get('I_back', None))
-        self.I_ext = NodeParamIext(d.get('I_ext', None))
+        self.tau = self.__npget__(d,'tau', delta=self.__delta)
+        self.sigma = self.__npget__(d,'sigma', delta=self.__delta)
+        self.gamma = self.__npget__(d,'gamma', delta=self.__delta)
+        self.tau_ampa = self.__npget__(d,'tau_ampa', delta=self.__delta)
+        self.sigma_ampa = self.__npget__(d,'sigma_ampa', delta=self.__delta)
+        self.gamma_ampa = self.__npget__(d,'gamma_ampa', delta=self.__delta)
+        self.I_back = NodeParamIback(d.get('I_back', None), delta=self.__delta)
+        self.I_ext = NodeParamIext(d.get('I_ext', None), delta=self.__delta)
         return
-
-    def __json__(self):
-        return {
-            "tau": self.tau,
-            "sigma": self.sigma,
-            "gamma": self.gamma,
-            "tau_ampa": self.tau_ampa,
-            "sigma_ampa": self.sigma_ampa,
-            "gamma_ampa": self.gamma_ampa,
-            "I_back": self.I_back.__json__(),
-            "I_ext": self.I_ext.__json__(),
-        }
-
-    def __repr__(self):
-        return json.dumps(self.__json__(), indent=2)
-
-    def __eq__(self, other: 'NodeParam') -> bool:
-        for key in NodeParam.Keys:
-            if getattr(self, key) != getattr(other, key):
-                return False
-        return True
-
-    def __sub__(self, other: 'NodeParam') -> dict:
-        d = {}
-        for key in NodeParam.Keys:
-            if getattr(self, key) != getattr(other, key):
-                d[key] = getattr(self, key) - getattr(other, key)
-        return d

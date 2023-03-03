@@ -1,51 +1,24 @@
 import json
 import numpy as np
+from src.mixin import Mixin
 
 zero = np.float64(0.0)
 
 
-class ConstantsParam:
+class ConstantsParam(Mixin):
     Keys = ['tau_r', 'tau_n', 'a', 'b', 'd', 'g_I', 'c_1', 'c_0', 'r_0']
 
-    def __init__(self, d: dict):
+    def __init__(self, d: dict, *, delta=False) -> None:
+        self.__delta = delta
         if d is None:
             d = {}
-        self.tau_r: np.float64 = zero + d.get('tau_r', 0.0)
-        self.tau_n: np.float64 = zero + d.get('tau_n', 0.0)
-        self.a: np.float64 = zero + d.get('a', 0.0)
-        self.b: np.float64 = zero + d.get('b', 0.0)
-        self.d: np.float64 = zero + d.get('d', 0.0)
-        self.g_I: np.float64 = zero + d.get('g_I', 0.0)
-        self.c_1: np.float64 = zero + d.get('c_1', 0.0)
-        self.c_0: np.float64 = zero + d.get('c_0', 0.0)
-        self.r_0: np.float64 = zero + d.get('r_0', 0.0)
+        self.tau_r = self.__npget__(d, 'tau_r', delta=self.__delta)
+        self.tau_n = self.__npget__(d, 'tau_n', delta=self.__delta)
+        self.a = self.__npget__(d, 'a', delta=self.__delta)
+        self.b = self.__npget__(d, 'b', delta=self.__delta)
+        self.d = self.__npget__(d, 'd', delta=self.__delta)
+        self.g_I = self.__npget__(d, 'g_I', delta=self.__delta)
+        self.c_1 = self.__npget__(d, 'c_1', delta=self.__delta)
+        self.c_0 = self.__npget__(d, 'c_0', delta=self.__delta)
+        self.r_0 = self.__npget__(d, 'r_0', delta=self.__delta)
         return
-
-    def __json__(self):
-        return {
-            "tau_r": self.tau_r,
-            "tau_n": self.tau_n,
-            "a": self.a,
-            "b": self.b,
-            "d": self.d,
-            "g_I": self.g_I,
-            "c_1": self.c_1,
-            "c_0": self.c_0,
-            "r_0": self.r_0,
-        }
-
-    def __repr__(self) -> str:
-        return json.dumps(self.__json__(), indent=2)
-
-    def __eq__(self, other: 'ConstantsParam') -> bool:
-        for key in ConstantsParam.Keys:
-            if getattr(self, key) != getattr(other, key):
-                return False
-        return True
-
-    def __sub__(self, other: 'ConstantsParam') -> dict:
-        d = {}
-        for key in ConstantsParam.Keys:
-            if getattr(self, key) != getattr(other, key):
-                d[key] = getattr(self, key) - getattr(other, key)
-        return d
