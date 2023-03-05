@@ -22,7 +22,7 @@ This will create a folder inside this folder named `venv` (the first `venv` is t
   # in windows:
   .\venv\Scripts\activate
   # in mac/linux
-  ./venv/bin/activate
+  source ./venv/bin/activate
   ```
 
 6. Install the required packages.
