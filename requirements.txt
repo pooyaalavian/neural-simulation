@@ -5,5 +5,4 @@ pandas
 scipy
 pytictoc
 matplotlib
-mpl_toolkits
 sdeint
