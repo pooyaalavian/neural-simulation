@@ -9,7 +9,7 @@ class NodeParamIback (Mixin):
     Keys = ['type', 'amplitude', 'frequency', 'phase', 'dc']
 
     def __init__(self, d: Union[dict, float], *, delta=False):
-        self.__delta=delta
+        self.__delta = delta
         dc_val = None
         if d is None:
             d = {}
@@ -17,10 +17,10 @@ class NodeParamIback (Mixin):
             dc_val = d
             d = {}
         self.type = d.get('type', None)
-        self.amplitude = self.__npget__(d,'amplitude',delta = self.__delta)
-        self.frequency = self.__npget__(d,'frequency',delta = self.__delta)
-        self.phase = self.__npget__(d,'phase',delta = self.__delta)
-        self.dc = self.__npget__(d,'dc',delta = self.__delta)
+        self.amplitude = self.__npget__(d, 'amplitude', delta=self.__delta)
+        self.frequency = self.__npget__(d, 'frequency', delta=self.__delta)
+        self.phase = self.__npget__(d, 'phase', delta=self.__delta)
+        self.dc = self.__npget__(d, 'dc', delta=self.__delta)
         if dc_val is not None:
             self.dc = dc_val
 
@@ -33,6 +33,19 @@ class NodeParamIback (Mixin):
             return self.dc
         else:
             return self.dc
+
+    def __flat_json__(self, *, ignore_zeros=False):
+        if ignore_zeros:
+            if self.type in ['dc', None] and self.dc == 0:
+                return {}
+            if self.type == 'sin' and self.amplitude == 0 and self.dc == 0:
+                return {}
+        val = ''
+        if self.type in ['dc', None]:
+            val = f'{self.dc}'
+        elif self.type == 'sin':
+            val = f'{self.amplitude} * sin(2 pi {self.frequency} * t + {self.phase}) + {self.dc}'
+        return {"value": val}
 
 
 class NodeParamIext(Mixin):
@@ -71,12 +84,12 @@ class NodeParam(Mixin):
         self.__delta = delta
         if d is None:
             d = {}
-        self.tau = self.__npget__(d,'tau', delta=self.__delta)
-        self.sigma = self.__npget__(d,'sigma', delta=self.__delta)
-        self.gamma = self.__npget__(d,'gamma', delta=self.__delta)
-        self.tau_ampa = self.__npget__(d,'tau_ampa', delta=self.__delta)
-        self.sigma_ampa = self.__npget__(d,'sigma_ampa', delta=self.__delta)
-        self.gamma_ampa = self.__npget__(d,'gamma_ampa', delta=self.__delta)
+        self.tau = self.__npget__(d, 'tau', delta=self.__delta)
+        self.sigma = self.__npget__(d, 'sigma', delta=self.__delta)
+        self.gamma = self.__npget__(d, 'gamma', delta=self.__delta)
+        self.tau_ampa = self.__npget__(d, 'tau_ampa', delta=self.__delta)
+        self.sigma_ampa = self.__npget__(d, 'sigma_ampa', delta=self.__delta)
+        self.gamma_ampa = self.__npget__(d, 'gamma_ampa', delta=self.__delta)
         self.I_back = NodeParamIback(d.get('I_back', None), delta=self.__delta)
         self.I_ext = NodeParamIext(d.get('I_ext', None), delta=self.__delta)
         return

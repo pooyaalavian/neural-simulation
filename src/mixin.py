@@ -1,6 +1,7 @@
 import json
 import numpy as np
 
+
 class Mixin:
     def __init__(self):
         self._mixin = True
@@ -51,11 +52,11 @@ class Mixin:
         d = self.__class__(self.__json__())
         if second.__delta == False:
             print('adding non-delta object')
-        
+
         for key in self.Keys:
             current = getattr(self, key)
-            other  = getattr(second, key, None)   
-            print(f'__add__ {key} {current} {other}')         
+            other = getattr(second, key, None)
+            # print(f'__add__ {key} {current} {other}')
             if current != other:
                 if self.__ismixin__(current):
                     value = current + other
@@ -72,13 +73,31 @@ class Mixin:
             return None if delta else np.float64(0)
         return np.float64(v)
 
+    def __flat_json__(self, *, ignore_zeros=False):
+        d = {}
+        for key in self.Keys:
+            v = getattr(self, key)
+            if self.__ismixin__(v):
+                tmp = v.__flat_json__(ignore_zeros=ignore_zeros)
+                for k in tmp:
+                    d[f'{key}.{k}'] = tmp[k]
+            else:
+              if v is not None:
+                  d[key] = v
+        if ignore_zeros:
+            for key in list(d.keys()):
+                if d[key] == 0:
+                    del d[key]
+        return d
+
     def get(self, key):
         if key in self.Keys:
             return getattr(self, key)
         return None
 
+
 class A(Mixin):
-    Keys = ['a', 'b', 'c','x','y']
+    Keys = ['a', 'b', 'c', 'x', 'y']
 
     def __init__(self, d):
         super().__init__()
