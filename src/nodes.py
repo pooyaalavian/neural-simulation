@@ -1,3 +1,4 @@
+from typing import Union
 import numpy as np
 from src.mixin import Mixin
 
@@ -7,7 +8,7 @@ zero = np.float64(0.0)
 class NodeParamIback (Mixin):
     Keys = ['type', 'amplitude', 'frequency', 'phase', 'dc']
 
-    def __init__(self, d: dict | float, *, delta=False):
+    def __init__(self, d: Union[dict, float], *, delta=False):
         self.__delta=delta
         dc_val = None
         if d is None:
@@ -37,7 +38,7 @@ class NodeParamIback (Mixin):
 class NodeParamIext(Mixin):
     Keys = ['type', 'height', 't_start', 't_end']
 
-    def __init__(self, d: dict | float, *, delta=False):
+    def __init__(self, d: Union[dict, float], *, delta=False):
         self.__delta = delta
         dc_val = None
         if d is None:
