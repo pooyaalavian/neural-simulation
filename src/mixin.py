@@ -72,6 +72,11 @@ class Mixin:
             return None if delta else np.float64(0)
         return np.float64(v)
 
+    def get(self, key):
+        if key in self.Keys:
+            return getattr(self, key)
+        return None
+
 class A(Mixin):
     Keys = ['a', 'b', 'c','x','y']
 
