@@ -70,14 +70,15 @@ class NodeParamIext(Mixin):
         if self.type == "rectangular":
             if t >= self.t_start and t <= self.t_end:
                 return self.height
-            else:
-                return zero
-        else:
             return zero
+        
+        if self.type == "dc":
+            return self.height
+        return zero
 
 
 class NodeParam(Mixin):
-    Keys = ['tau', 'sigma', 'gamma', 'tau_ampa',
+    Keys = ['tau', 'sigma', 'gamma','gamma_r', 'tau_ampa',
             'sigma_ampa', 'gamma_ampa', 'I_back', 'I_ext']
 
     def __init__(self, d: dict, *, delta=False):
@@ -87,6 +88,7 @@ class NodeParam(Mixin):
         self.tau = self.__npget__(d, 'tau', delta=self.__delta)
         self.sigma = self.__npget__(d, 'sigma', delta=self.__delta)
         self.gamma = self.__npget__(d, 'gamma', delta=self.__delta)
+        self.gamma_r = self.__npget__(d, 'gamma_r', delta=self.__delta)
         self.tau_ampa = self.__npget__(d, 'tau_ampa', delta=self.__delta)
         self.sigma_ampa = self.__npget__(d, 'sigma_ampa', delta=self.__delta)
         self.gamma_ampa = self.__npget__(d, 'gamma_ampa', delta=self.__delta)
