@@ -42,3 +42,20 @@ class ConnectionParam(Mixin):
         if src is None:
             return zero
         return getattr(src, source_node, zero)
+    
+    def print_matrix(self, show_zeros=False) -> None:
+        def gg(x):
+            if show_zeros==False and x == 0:
+                return f'{"":>10}'
+            return f'{x:>10.3f}'
+        
+        print(f'{"":>10}', end='')
+        for src in self.Keys:
+            print(f'{src:>10}', end='')
+        print()
+        for dst in self.Keys:
+            print(f'{dst:>10}', end='')
+            for src in self.Keys:
+                print(gg(self.get(src, dst)), end='')
+            print()
+        return
