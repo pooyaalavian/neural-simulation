@@ -6,9 +6,16 @@ from src.nodes import NodeParam
 zero = np.float64(0.0)
 
 
+def normalize(n):
+    if -1e50 < n < 1e-50:
+        return n*0.0
+    return n
+
+
 class NodeState:
-    def __init__(self, d: Union[dict, 'NodeState'], *, is_delta=False):
+    def __init__(self, name, d: Union[dict, 'NodeState'], *, is_delta=False):
         self.is_delta = is_delta
+        self._name = name
         if isinstance(d, NodeState):
             self.s = d.s
             self.s_ampa = d.s_ampa
@@ -28,16 +35,18 @@ class NodeState:
         self._phi = zero
 
     def serialize(self):
+        self.check_bounds()
         return np.array((self.s, self.s_ampa, self.r, self.y))
 
     def serialize_g(self, p: NodeParam):
-        return np.array((0,0,0,p.sigma))
+        return np.array((0, 0, 0, p.sigma))
 
     def deserialize(self, arr: np.array):
-        self.s = arr[0]
-        self.s_ampa = arr[1]
-        self.r = arr[2]
-        self.y = arr[3]
+        self.s = normalize(arr[0])
+        self.s_ampa = normalize(arr[1])
+        self.r = normalize(arr[2])
+        self.y = normalize(arr[3])
+
         return np.delete(arr, [0, 1, 2, 3])
 
     def __add__(self, delta: 'NodeState'):
@@ -50,6 +59,13 @@ class NodeState:
         newState.y += delta.y
         return newState
 
+    def check_bounds(self):
+        for k in ['s', 's_ampa', 'r', 'y', '_input', '_phi']:
+            v = getattr(self, k)
+            if np.abs(v) > 1e10:
+                raise ValueError(
+                    f"State variable {self._name}.{k} is too large")
+
 
 class State:
     Nodes = ['exc1', 'exc2', 'pv', 'sst1', 'sst2', 'vip1', 'vip2']
@@ -57,23 +73,23 @@ class State:
     def __init__(self, d: Union[dict, 'State'] = None, *, is_delta=False):
         self.is_delta = is_delta
         if isinstance(d, State):
-            self.exc1 = NodeState(d.exc1, is_delta=is_delta)
-            self.exc2 = NodeState(d.exc2, is_delta=is_delta)
-            self.pv = NodeState(d.pv, is_delta=is_delta)
-            self.sst1 = NodeState(d.sst1, is_delta=is_delta)
-            self.sst2 = NodeState(d.sst2, is_delta=is_delta)
-            self.vip1 = NodeState(d.vip1, is_delta=is_delta)
-            self.vip2 = NodeState(d.vip2, is_delta=is_delta)
+            self.exc1 = NodeState('exc1', d.exc1, is_delta=is_delta)
+            self.exc2 = NodeState('exc2', d.exc2, is_delta=is_delta)
+            self.pv = NodeState('pv', d.pv, is_delta=is_delta)
+            self.sst1 = NodeState('sst1', d.sst1, is_delta=is_delta)
+            self.sst2 = NodeState('sst2', d.sst2, is_delta=is_delta)
+            self.vip1 = NodeState('vip1', d.vip1, is_delta=is_delta)
+            self.vip2 = NodeState('vip2', d.vip2, is_delta=is_delta)
             return
         if d is None:
             d = {}
-        self.exc1 = NodeState(d.get('exc1', {}), is_delta=is_delta)
-        self.exc2 = NodeState(d.get('exc2', {}), is_delta=is_delta)
-        self.pv = NodeState(d.get('pv', {}), is_delta=is_delta)
-        self.sst1 = NodeState(d.get('sst1', {}), is_delta=is_delta)
-        self.sst2 = NodeState(d.get('sst2', {}), is_delta=is_delta)
-        self.vip1 = NodeState(d.get('vip1', {}), is_delta=is_delta)
-        self.vip2 = NodeState(d.get('vip2', {}), is_delta=is_delta)
+        self.exc1 = NodeState('exc1', d.get('exc1', {}), is_delta=is_delta)
+        self.exc2 = NodeState('exc2', d.get('exc2', {}), is_delta=is_delta)
+        self.pv = NodeState('pv', d.get('pv', {}), is_delta=is_delta)
+        self.sst1 = NodeState('sst1', d.get('sst1', {}), is_delta=is_delta)
+        self.sst2 = NodeState('sst2', d.get('sst2', {}), is_delta=is_delta)
+        self.vip1 = NodeState('vip1', d.get('vip1', {}), is_delta=is_delta)
+        self.vip2 = NodeState('vip2', d.get('vip2', {}), is_delta=is_delta)
         return
 
     def initialize(self, q: ParameterSet):
@@ -89,7 +105,7 @@ class State:
             self.sst1.serialize(), self.sst2.serialize(),
             self.vip1.serialize(), self.vip2.serialize()
         ))
-    
+
     def serialize_g(self, p: ParameterSet):
         return np.concatenate((
             self.exc1.serialize_g(p.exc1), self.exc2.serialize_g(p.exc2),
