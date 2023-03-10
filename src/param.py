@@ -3,6 +3,7 @@ from src.mixin import Mixin
 from src.nodes import NodeParam
 from src.connections import ConnectionParam
 from src.constants import ConstantsParam
+import warnings
 
 
 class ParameterSet(Mixin):
@@ -10,7 +11,6 @@ class ParameterSet(Mixin):
             'vip1', 'vip2', 'J', 'J_ampa', 'constants']
 
     def __init__(self, filename_or_dict, *, delta=False):
-        loaded = False
         self.__delta = delta
         if type(filename_or_dict) == str:
             self.base_file = filename_or_dict
@@ -32,17 +32,32 @@ class ParameterSet(Mixin):
         self.J = ConnectionParam(d.get('J', None), delta=self.__delta)
         self.J_ampa = ConnectionParam(d.get('J_ampa', None), delta=self.__delta)
         self.constants = ConstantsParam(d.get('constants', None), delta=self.__delta)
-        loaded = True
-        if not loaded:
-            raise ValueError("Could not load parameter set from file")
         self.recalculate()
         return
 
     def recalculate(self):
         # todo: calc J_pve1, J_pve2
-        # self.J.pv.exc1 = 0.0
-        # self.J.pv.exc2 = 0.0
-        pass
+        c = self.constants
+        J = self.J
+        p = self.pv
+        eta = p.tau * p.gamma * c.c_1/(
+            c.g_I - J.pv.pv * p.tau * p.gamma * c.c_1)
+        J_s = J.exc1.exc1
+        J_c = J.exc1.exc2
+        J_ei= J.exc1.pv
+        if J.exc1.exc1 != J.exc2.exc2:
+            warnings.warn('Calculating J matrix: J.exc1.exc1 != J.exc2.exc2 -- J_s calculated as average')
+            J_s = (J.exc1.exc1 + J.exc2.exc2)/2.0 
+        if J.exc1.exc2 != J.exc2.exc1:
+            warnings.warn('Calculating J matrix: J.exc1.exc2 != J.exc2.exc1 -- J_c calculated as average')
+            J_c = (J.exc1.exc2 + J.exc2.exc1)/2.0
+        if J.exc1.pv != J.exc2.pv:
+            warnings.warn('Calculating J matrix: J.exc1.pv != J.exc2.pv -- J_ei calculated as average')
+            J_ei = (J.exc1.pv + J.exc2.pv)/2.0
+        J_ie = (c.J_0 - J_s - J_c)/(2 * J_ei * eta)
+        self.J.pv.exc1 = J_ie
+        self.J.pv.exc2 = J_ie
+        return
 
     def getDelta(self, *, base_file: str = None):
         if base_file is None:
