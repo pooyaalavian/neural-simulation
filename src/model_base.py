@@ -4,6 +4,7 @@ from src.param import ParameterSet
 from src.nodes import NodeParam
 from src.constants import ConstantsParam
 import logging
+import json
 
 
 def arr2str(arr: np.array):
@@ -68,16 +69,16 @@ class ModelBase(State):
             den = 1 - np.exp(-p.d * num)
             return num/den
         except FloatingPointError as e:
-            val = np.abs(p.d * num)
-            sgn = np.sign(-p.d * num) 
-            if val > 1e10:
+            exp_val = np.abs(p.d * num)
+            exp_sgn = np.sign(-p.d * num) 
+            if exp_val > 100:
                 Warning('den overflow in calculating phi_exc')
-                if sgn>0:
-                    return 0
-                if sgn<0:
+                if exp_sgn>0:
+                    return num*0.0
+                if exp_sgn<0:
                     return num 
                 return num
-            if val < 1e-10:
+            if exp_val < 1e-7:
                 Warning('den underflow in calculating phi_exc')
                 # Use Hospital for disambiguation
                 return 1.0/p.d
@@ -152,5 +153,28 @@ class ModelBase(State):
         self.calc_ds(delta, t, params)
         self.calc_dr(delta, t, params)
         self.calc_dy(delta, t, params)
-
+        # print('json: '+self.jsonRes(t, delta))
         return delta
+    
+    def jsonRes(self, t, delta:'ModelBase'):
+        X:list[NodeState] = [getattr(self,x) for x in self.Nodes]
+        dX:list[NodeState] = [getattr(delta,x) for x in self.Nodes]
+        res = {
+          't': f'{t:.8f}',
+            'z': {
+                's': [f'{x.s:.8f}' for x in X],
+                's_ampa': [f'{x.s_ampa:.8f}' for x in X],
+                'r': [f'{x.r:.8f}' for x in X],
+                'y': [f'{x.y:.8f}' for x in X],
+                'input': [f'{x._input:.8f}' for x in X],
+                'phi': [f'{x._phi:.8f}' for x in X],
+            },
+            'dz': {
+                'ds': [f'{x.s:.8f}' for x in dX],
+                'ds_ampa': [f'{x.s_ampa:.8f}' for x in dX],
+                'dr': [f'{x.r:.8f}' for x in dX],
+                'dy': [f'{x.y:.8f}' for x in dX],
+            },
+        }
+        return json.dumps(res)
+    
