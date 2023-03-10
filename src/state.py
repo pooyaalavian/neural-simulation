@@ -7,7 +7,7 @@ zero = np.float64(0.0)
 
 
 def normalize(n):
-    if -1e50 < n < 1e-50:
+    if -1e-50 < n < 1e-50:
         return n*0.0
     return n
 
@@ -60,9 +60,10 @@ class NodeState:
         return newState
 
     def check_bounds(self):
+        return
         for k in ['s', 's_ampa', 'r', 'y', '_input', '_phi']:
             v = getattr(self, k)
-            if np.abs(v) > 1e10:
+            if np.abs(v) > 1e99:
                 raise ValueError(
                     f"State variable {self._name}.{k} is too large")
 
@@ -99,29 +100,37 @@ class State:
         raise NotImplementedError("Not implemented")
 
     def serialize(self):
-        return np.concatenate((
-            self.exc1.serialize(), self.exc2.serialize(),
-            self.pv.serialize(),
-            self.sst1.serialize(), self.sst2.serialize(),
-            self.vip1.serialize(), self.vip2.serialize()
-        ))
+        return np.concatenate([
+            getattr(self, n).serialize() for n in State.Nodes
+        ])
+        # return np.concatenate((
+        #     self.exc1.serialize(), self.exc2.serialize(),
+        #     self.pv.serialize(),
+        #     self.sst1.serialize(), self.sst2.serialize(),
+        #     self.vip1.serialize(), self.vip2.serialize()
+        # ))
 
     def serialize_g(self, p: ParameterSet):
-        return np.concatenate((
-            self.exc1.serialize_g(p.exc1), self.exc2.serialize_g(p.exc2),
-            self.pv.serialize_g(p.pv),
-            self.sst1.serialize_g(p.sst1), self.sst2.serialize_g(p.sst2),
-            self.vip1.serialize_g(p.vip1), self.vip2.serialize_g(p.vip2),
-        ))
+        return np.concatenate([
+            getattr(self, n).serialize_g(getattr(p, n)) for n in State.Nodes
+        ])
+        # return np.concatenate((
+        #     self.exc1.serialize_g(p.exc1), self.exc2.serialize_g(p.exc2),
+        #     self.pv.serialize_g(p.pv),
+        #     self.sst1.serialize_g(p.sst1), self.sst2.serialize_g(p.sst2),
+        #     self.vip1.serialize_g(p.vip1), self.vip2.serialize_g(p.vip2),
+        # ))
 
     def deserialize(self, arr: np.array):
-        arr = self.exc1.deserialize(arr)
-        arr = self.exc2.deserialize(arr)
-        arr = self.pv.deserialize(arr)
-        arr = self.sst1.deserialize(arr)
-        arr = self.sst2.deserialize(arr)
-        arr = self.vip1.deserialize(arr)
-        arr = self.vip2.deserialize(arr)
+        for n in State.Nodes:
+            arr = getattr(self, n).deserialize(arr)
+        # arr = self.exc1.deserialize(arr)
+        # arr = self.exc2.deserialize(arr)
+        # arr = self.pv.deserialize(arr)
+        # arr = self.sst1.deserialize(arr)
+        # arr = self.sst2.deserialize(arr)
+        # arr = self.vip1.deserialize(arr)
+        # arr = self.vip2.deserialize(arr)
         if len(arr) > 0:
             raise ValueError("Array not empty")
         return self
