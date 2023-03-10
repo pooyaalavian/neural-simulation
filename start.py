@@ -7,13 +7,17 @@ import sdeint
 
 from src import ParameterSet
 from src import ModelBase as Model
+from src.integral import itoint
 import json 
 import logging 
 import time 
-np.seterr(all='raise')
-logging.basicConfig(level=logging.WARNING)
+# np.seterr(all='raise')
+np.set_printoptions(precision=4, suppress=True, linewidth=300)
+logging.basicConfig(level=logging.WARN)
 
 
+def arr2str(arr: np.array):
+    return ', '.join([f'{x:11.3f}' for x in arr])
 
 
 def solve(f, g, y0: np.array, t: np.array):
@@ -34,28 +38,38 @@ def run(t_end, dt=0.001):
     params.J_ampa.print_matrix()
     sigma = y0.serialize_g(params)
     g_vector = sigma * params.constants.tau_y
-    g_vector = g_vector * 0
+    g_matrix = np.diag(g_vector)
+    g_matrix = g_matrix[:,~np.all(g_matrix == 0, axis=0)]
+    g_matrix = -0.0 * g_matrix
 
     def model_f(y, t):
         Y = Model().deserialize(y)
         delta = Y.calcDelta(t, params)
-        return delta.serialize()
+        dy = delta.serialize()
+        logging.debug(f' y: {arr2str(y)}')
+        logging.debug(f'dy: {arr2str(dy)}')
+        return dy
 
     def model_g(y, t):
         # Y = MyState().deserialize(y)
         # sigma = Y.serialize_g(params)
         # tau_y = params.constants.tau_y
         # g = sigma * tau_y
-        return np.diag(g_vector)
+        # return np.diag(g_vector)
+        return g_matrix.copy()
 
-    res = sdeint.itoint(model_f, model_g, y0.serialize(), t)
+    gen = np.random.Generator(np.random.PCG64(123))
+    # res = sdeint.itoint(model_f, model_g, y0.serialize(), t, gen)
+    res = itoint(model_f, model_g, y0.serialize(), t, gen)
     def toState(y): return Model().deserialize(y)
     t_end = time.time()
     print(f'elapsed time: {t_end - t_start} seconds')
     return t, list(map(toState, res))
 
 
-t, res = run(10)
+
+
+t, res = run(10, 0.001)
 exc1_r = np.array([x.exc1.r for x in res])
 exc2_r = np.array([x.exc2.r for x in res])
 pv_r = np.array([x.pv.r for x in res])
