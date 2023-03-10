@@ -8,15 +8,15 @@
     "sigma_ampa": 0.0,
     "gamma_ampa": 2.075,
     "I_back": {
-      "type": "dc",
-      "amplitude": 0,
-      "frequency": 0,
+      "type": "sin",
+      "amplitude": 0.1,
+      "frequency": 4,
       "phase": 0,
       "dc": 0.45
     },
     "I_ext": {
       "type": "rectangular",
-      "height": 0.0,
+      "height": 0.3,
       "t_start": 4.0,
       "t_end": 6.0
     }
@@ -30,9 +30,9 @@
     "sigma_ampa": 0.0,
     "gamma_ampa": 2.075,
     "I_back": {
-      "type": "dc",
-      "amplitude": 0.0,
-      "frequency": 0.0,
+      "type": "sin",
+      "amplitude": 0.1,
+      "frequency": 4.0,
       "phase": 0.0,
       "dc": 0.45
     },
@@ -48,9 +48,6 @@
     "sigma": 2.5,
     "gamma": 4.1625,
     "gamma_r": 1.0,
-    "tau_ampa": 0.0,
-    "sigma_ampa": 0.0,
-    "gamma_ampa": 0.0,
     "I_back": {
       "type": "dc",
       "amplitude": 0.0,
@@ -93,12 +90,9 @@
   },
   "vip1": {
     "tau": 0.0072,
-    "sigma": 0.0,
+    "sigma": 2.5,
     "gamma": 2.075,
     "gamma_r": 1.0,
-    "tau_ampa": 0.0,
-    "sigma_ampa": 0.0,
-    "gamma_ampa": 0.0,
     "I_back": {
       "type": null,
       "amplitude": 0.0,
@@ -115,12 +109,9 @@
   },
   "vip2": {
     "tau": 0.0072,
-    "sigma": 0.0,
+    "sigma": 2.5,
     "gamma": 2.075,
     "gamma_r": 1.0,
-    "tau_ampa": 0.0,
-    "sigma_ampa": 0.0,
-    "gamma_ampa": 0.0,
     "I_back": {
       "type": null,
       "amplitude": 0.0,
@@ -155,8 +146,8 @@
       "vip2": 0.0
     },
     "pv": {
-      "exc1": 0.301,
-      "exc2": 0.301,
+      "exc1": 0.300712,
+      "exc2": 0.300712,
       "pv": -0.12,
       "sst1": 0.0,
       "sst2": 0.0,
@@ -276,6 +267,7 @@
     "c_1": 615.0,
     "c_0": 177.0,
     "r_0": 5.5,
+    "J_0":0.2112,
     "ratio": 0.0
   }
 }
