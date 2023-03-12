@@ -138,7 +138,7 @@ class ModelBase(State):
         for node_name in self.Nodes:
             n: NodeState = getattr(self, node_name)
             d: NodeState = getattr(delta, node_name)
-            d.y = n.y / params.constants.tau_n
+            d.y = -n.y / params.constants.tau_n
         logging.debug(
             f'  dy:      {arr2str([getattr(delta,x).y for x in self.Nodes])}')
         return
