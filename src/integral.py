@@ -92,7 +92,7 @@ def _Roessler2010_SRK2(f, G, y0, tspan, IJmethod, dW=None, IJ=None,
         fn1h = f(H20, tn1)*h
         dg = np.dot(Gn, Ik)
         Yn1 = Yn + 0.5*(fnh + fn1h) + dg
-        print(tn, dg)
+        # print(tn, dg)
         # if have_separate_g:
         #     for k in range(0, m):
         #         Yn1 += 0.5*sqrth*(G[k](H2[:,k], tn1) - G[k](H3[:,k], tn1))

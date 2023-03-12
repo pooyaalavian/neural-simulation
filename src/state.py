@@ -1,6 +1,6 @@
 from typing import Union
 import numpy as np
-from src.param import ParameterSet
+from src import ParameterSet, ConstantsParam
 from src.nodes import NodeParam
 
 zero = np.float64(0.0)

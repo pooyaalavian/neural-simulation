@@ -5,6 +5,7 @@ from .constants import ConstantsParam
 from .mixin import Mixin
 from .state import State
 from .model_base import ModelBase
+from .plot import Plot
 
 def deflatten(d):
     """Convert a dictionary with no nesting to a dictionary with nesting."""
