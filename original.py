@@ -354,10 +354,11 @@ def model_MW(z, t, Q):
     ]
 
     dsa   = (-(sa  /tau_a ) +  gamma_a*r_a*(1-sa) )
-    dsb   = (-(sb  /tau_b ) +  gamma_b*r_b*(1-sb) )
-    dsc   = (-(sc  /tau_c ) +  gamma_c*r_c)
     ds_Aa = (-(s_Aa/tau_Aa) + gamma_Aa*r_a)
+    dsb   = (-(sb  /tau_b ) +  gamma_b*r_b*(1-sb) )
     ds_Ab = (-(s_Ab/tau_Ab) + gamma_Ab*r_b)
+    
+    dsc   = (-(sc  /tau_c ) +  gamma_c*r_c)
     dst_a = (-(st_a/tau_sa) + gamma_sa*r_d)
     dst_b = (-(st_b/tau_sb) + gamma_sb*r_e)
     ds_va = (-(s_va/tau_va) + gamma_va*r_f)
@@ -373,9 +374,9 @@ def model_MW(z, t, Q):
         ds_Aa, ds_Ab,
         0, 0, 0, 0, 0,
     ]
-    dr_a = ((phi_a-r_a)/tau_r)*gamma_ra
-    dr_b = ((phi_b-r_b)/tau_r)*gamma_rb
-    dr_c = ((phi_c-r_c)/tau_r)*gamma_rc
+    dr_a = ((phi_a -r_a)/tau_r)*gamma_ra
+    dr_b = ((phi_b -r_b)/tau_r)*gamma_rb
+    dr_c = ((phi_c -r_c)/tau_r)*gamma_rc
     dr_d = ((phi_sa-r_d)/tau_r)*gamma_rs
     dr_e = ((phi_sb-r_e)/tau_r)*gamma_rs
     dr_f = ((phi_va-r_f)/tau_r)*gamma_v
