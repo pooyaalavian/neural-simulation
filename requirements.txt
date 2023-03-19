@@ -6,3 +6,4 @@ scipy
 pytictoc
 matplotlib
 sdeint
+autopep8

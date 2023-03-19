@@ -7,7 +7,7 @@ git clone https://github.com/pooyaalavian/neural-modeling-ode-solver.git
 ```
 2. Open the folder in VS Code.
 3. Open VS Code terminal in this folder.
-4. Create a new python virtual env for this project. It must by python 3, recommended python 3.10.
+4. Create a new python virtual env for this project. It must by python 3, recommended python 3.10 or higher (check with `python --version`).
 ```bash
 python -m venv venv
                ~~~~
