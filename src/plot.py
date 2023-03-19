@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 class Plot:
-    def __init__(self, addresses, *, t_start=None, t_end=None, title: str = None, file: str = None):
+    def __init__(self, addresses, *, t_start=None, t_end=None, title: str = None, file: Path = None):
         self.addresses = addresses
         self.t_start = t_start
         self.t_end = t_end
@@ -16,9 +16,7 @@ class Plot:
         return
 
     def check_path(self):
-        dir_exists = os.path.isdir(os.path.dirname(self.file))
-        if not dir_exists:
-            os.makedirs(os.path.dirname(self.file), exist_ok=True)
+        self.file.parent.mkdir(exist_ok=True)
 
     def __call__(self, t: np.array, res: list[ModelBase]):
         self.plot(t, res)

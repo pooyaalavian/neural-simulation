@@ -64,18 +64,37 @@ class ParameterSet(Mixin):
             self.__update__(k,v)
         return
 
-    def getDelta(self, *, base_file: str = None):
-        if base_file is None:
-            base_file = self.base_file
-        base = ParameterSet(base_file)
-        d = self - base
-        return d
+    def getDelta(self, *, base_file: str = None)->dict[str,dict[str,any]]:
+        base = ParameterSet(base_file).__flat_json__()
+        current = self.__flat_json__()
+        diff = {}
+        for k in current:
+            if base.get(k, None)!=current[k]:
+                diff[k] = {'new':current[k], 'old':base.get(k, None)}
+        return diff
 
     def save(self, filename: str):
         with open(filename, 'w') as f:
-            json.dump(str(self), f, indent=2)
+            json.dump(self.__json__(), f, indent=2)
 
     def saveDelta(self, filename: str, *, base_file: str):
-        delta = self.getDelta(base_file)
+        delta = self.getDelta(base_file=base_file)
         with open(filename, 'w') as f:
             json.dump(delta, f, indent=2)
+        return 
+    
+    def saveDeltaHtml(self, filename: str, *, base_file: str):
+        delta = self.getDelta(base_file=base_file)
+        with open(filename, 'w') as f:
+            f.write(r'''<html><head><style>
+            .key,.old,.new{padding: 0.5rem;}
+            .key{font-weight: bold; }
+            .old{background-color: #f8dfda; color: #dc3545;}
+            .new{background-color: #d4edda; color: #28a745;}
+            </style></head>''')
+            f.write('<body><table>')
+            f.write(f'''<tr><th>Key</th><th>Old</th><th>New</th></tr>''')
+            for k in delta:
+                f.write(f'''<tr><td class="key">{k}</td><td class="old">{delta[k]['old']}</td><td class="new">{delta[k]['new']}</td></tr>''')
+            f.write('</table></body>')
+        return 
