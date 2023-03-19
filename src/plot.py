@@ -2,6 +2,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from src.model_base import ModelBase
 import os 
+from pathlib import Path
 
 
 class Plot:
@@ -42,9 +43,20 @@ class Plot:
             plt.plot(t[_t], tr)
         if self.title is not None:
             plt.title(self.title)
-        if self.file is not None:
-            plt.savefig(self.file)
-            plt.close()
-        else:
+        self.save()
+        return
+    
+    def save(self):
+        if self.file is None:
             plt.show()
+            return 
+        path = Path(self.file)
+        ext = path.suffix
+        if ext.lower()=='.png':
+            plt.savefig(self.file, format='png')
+        elif ext.lower()=='.eps':
+            plt.savefig(self.file, format='eps')
+        else:
+            plt.savefig(self.file)
+        plt.close()
         return
