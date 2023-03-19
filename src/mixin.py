@@ -95,6 +95,21 @@ class Mixin:
             return getattr(self, key)
         return None
 
+    def __update__(self, address, value):
+        if '.' in address:
+            key, rest = address.split('.', 1)
+            if key in self.Keys:
+                v = getattr(self, key)
+                if self.__ismixin__(v):
+                    v.__update__(rest, value)
+                else:
+                    setattr(self, key, value)
+        else:
+            if address in self.Keys:
+                setattr(self, address, value)
+            else: 
+                raise ValueError(f'Failed to set {address} to {value}')
+        return
 
 class A(Mixin):
     Keys = ['a', 'b', 'c', 'x', 'y']

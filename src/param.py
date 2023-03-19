@@ -59,6 +59,11 @@ class ParameterSet(Mixin):
         self.J.pv.exc2 = J_ie
         return
 
+    def batch_update(self, updates:dict[str,int]):
+        for k, v in updates.items():
+            self.__update__(k,v)
+        return
+
     def getDelta(self, *, base_file: str = None):
         if base_file is None:
             base_file = self.base_file
