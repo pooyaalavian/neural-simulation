@@ -3,6 +3,7 @@ import logging
 import time 
 from datetime import datetime
 import json
+from pathlib import Path
 
 from src import ParameterSet, Plot
 from src import ModelBase as Model
@@ -13,7 +14,7 @@ np.set_printoptions(precision=4, suppress=True, linewidth=200)
 logging.basicConfig(level=logging.WARN)
 
 
-def run(t_end, changes = {}, *, dt=0.001):
+def run(t_end, changes = {}, *, dt=0.001, path:Path=None):
     print(f'estimated time: {1.1 * t_end/dt / 1000} seconds')
     t_start = time.time()
     t = np.linspace(0, t_end, int(t_end / dt) + 1)
@@ -24,6 +25,10 @@ def run(t_end, changes = {}, *, dt=0.001):
     params.J.print_matrix()
     params.J_ampa.print_matrix()
     print(json.dumps(params.__flat_json__(ignore_zeros=True), indent=2))
+    if path is not None:
+        params.save(path / 'params.json')
+        params.saveDelta(path / 'params_delta.json',base_file='structure.json')
+        params.saveDeltaHtml(path / 'params_delta.html',base_file='structure.json')
 
     def calc_g_static():
       sigma = y0.serialize_g(params)
@@ -59,27 +64,28 @@ def run(t_end, changes = {}, *, dt=0.001):
 
 
 if __name__ == '__main__':
+    exp = 'my-exp'
+    dt = datetime.now()
+    folder = Path(f'img/{exp}/{dt.strftime("%Y-%m-%d")}/{dt.strftime("%H%M%S")}')
+    folder.mkdir()
     t, res = run(10, {
         'exc1.sigma':60,
         # 'J.exc1.exc2':0.03,
         # 'J.exc2.exc1':0.03,
         'exc1.I_back.frequency':0.5,
-        'exc1.I_back.frequency':2.0,
-    } , dt=0.001)
+        'exc2.I_back.frequency':2.0,
+    } , dt=0.001, path=folder)
     # exc1_r = np.array([x.exc1.r for x in res])
     # exc2_r = np.array([x.exc2.r for x in res])
     # pv_r = np.array([x.pv.r for x in res])
-    exp = 'my-exp'
-    dt = datetime.now()
-    folder = f'img/{exp}/{dt.strftime("%Y-%m-%d")}/{dt.strftime("%H%M%S")}'
     plots = [
-        Plot(['exc1.r'], t_start=0, t_end=10, title='Exc 1 Firing Rate', file=f'{folder}/r1.svg'),
-        Plot(['exc2.r'], t_start=0, t_end=10, title='Exc 2 Firing Rate', file=f'{folder}/r2.svg'),
-        Plot(['pv.r'],   t_start=0, t_end=10, title='PV Firing Rate',    file=f'{folder}/pv.svg'),
-        Plot(['sst1.r'], t_start=0, t_end=10, title='SST 1 Firing Rate', file=f'{folder}/s1.svg'),
-        Plot(['sst2.r'], t_start=0, t_end=10, title='SST 2 Firing Rate', file=f'{folder}/s2.svg'),
-        Plot(['vip1.r'], t_start=0, t_end=10, title='VIP 1 Firing Rate', file=f'{folder}/v1.svg'),
-        Plot(['vip2.r'], t_start=0, t_end=10, title='VIP 2 Firing Rate', file=f'{folder}/v2.svg'),
+        Plot(['exc1.r'], t_start=0, t_end=10, title='Exc 1 Firing Rate', file=folder / 'r1.svg'),
+        Plot(['exc2.r'], t_start=0, t_end=10, title='Exc 2 Firing Rate', file=folder / 'r2.svg'),
+        Plot(['pv.r'],   t_start=0, t_end=10, title='PV Firing Rate',    file=folder / 'pv.svg'),
+        Plot(['sst1.r'], t_start=0, t_end=10, title='SST 1 Firing Rate', file=folder / 's1.svg'),
+        Plot(['sst2.r'], t_start=0, t_end=10, title='SST 2 Firing Rate', file=folder / 's2.svg'),
+        Plot(['vip1.r'], t_start=0, t_end=10, title='VIP 1 Firing Rate', file=folder / 'v1.svg'),
+        Plot(['vip2.r'], t_start=0, t_end=10, title='VIP 2 Firing Rate', file=folder / 'v2.svg'),
         # Plot(['exc1.r'], t_start=2, t_end=3, title='Exc 1 Firing Rate', file=f'{folder}/r1-before.png'),
         # Plot(['exc1.r'], t_start=5, t_end=6, title='Exc 1 Firing Rate', file=f'{folder}/r1-during.png'),
         # Plot(['exc1.r'], t_start=7, t_end=8, title='Exc 1 Firing Rate', file=f'{folder}/r1-after.png'),
@@ -87,3 +93,20 @@ if __name__ == '__main__':
     ]
     for p in plots:
         p(t,res)
+    plots_ref = [p.file.name for p in plots]
+    plots_ref = [f'<div><img src="{p}"/></div>' for p in plots_ref]
+    plots_ref = '\n'.join(plots_ref)
+
+    html = folder / 'results.html'
+    html.write_text(f'''
+<html>
+<head>
+    <title> Summary </title>
+</head>
+<body>
+    <iframe src="params_delta.html" onload='javascript:(function(o){{o.style.height=o.contentWindow.document.body.scrollHeight+"px";}}(this));' 
+    style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
+    {plots_ref}
+</body>
+</html>
+        ''')
