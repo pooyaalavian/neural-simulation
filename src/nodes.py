@@ -34,18 +34,18 @@ class NodeParamIback (Mixin):
         else:
             return self.dc
 
-    def __flat_json__(self, *, ignore_zeros=False):
-        if ignore_zeros:
-            if self.type in ['dc', None] and self.dc == 0:
-                return {}
-            if self.type == 'sin' and self.amplitude == 0 and self.dc == 0:
-                return {}
-        val = ''
-        if self.type in ['dc', None]:
-            val = f'{self.dc}'
-        elif self.type == 'sin':
-            val = f'{self.amplitude} * sin(2 pi {self.frequency} * t + {self.phase}) + {self.dc}'
-        return {"value": val}
+    # def __flat_json__(self, *, ignore_zeros=False):
+    #     if ignore_zeros:
+    #         if self.type in ['dc', None] and self.dc == 0:
+    #             return {}
+    #         if self.type == 'sin' and self.amplitude == 0 and self.dc == 0:
+    #             return {}
+    #     val = ''
+    #     if self.type in ['dc', None]:
+    #         val = f'{self.dc}'
+    #     elif self.type == 'sin':
+    #         val = f'{self.amplitude} * sin( (2 pi) * {self.frequency} * t + {self.phase}) + {self.dc}'
+    #     return {"value": val}
 
 
 class NodeParamIext(Mixin):

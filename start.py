@@ -67,7 +67,7 @@ if __name__ == '__main__':
     exp = 'my-exp'
     dt = datetime.now()
     folder = Path(f'img/{exp}/{dt.strftime("%Y-%m-%d")}/{dt.strftime("%H%M%S")}')
-    folder.mkdir()
+    folder.mkdir(parents=True)
     t, res = run(10, {
         'exc1.sigma':60,
         # 'J.exc1.exc2':0.03,
@@ -94,19 +94,25 @@ if __name__ == '__main__':
     for p in plots:
         p(t,res)
     plots_ref = [p.file.name for p in plots]
-    plots_ref = [f'<div><img src="{p}"/></div>' for p in plots_ref]
+    plots_ref = [f'<div class="res-img"><img src="{p}"/></div>' for p in plots_ref]
     plots_ref = '\n'.join(plots_ref)
 
     html = folder / 'results.html'
-    html.write_text(f'''
-<html>
+    html.write_text(f'''<html>
 <head>
     <title> Summary </title>
+    <style>
+    .images {{display: flex; flex-wrap: wrap;}}
+    .res-img {{}}
+    </style>
 </head>
 <body>
+<section id="inputs">
     <iframe src="params_delta.html" onload='javascript:(function(o){{o.style.height=o.contentWindow.document.body.scrollHeight+"px";}}(this));' 
     style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
-    {plots_ref}
+</section>
+<section id="results">
+    <div class="images">{plots_ref}</div>
+</section>
 </body>
-</html>
-        ''')
+</html>''')

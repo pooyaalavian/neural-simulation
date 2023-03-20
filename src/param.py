@@ -62,6 +62,7 @@ class ParameterSet(Mixin):
     def batch_update(self, updates:dict[str,int]):
         for k, v in updates.items():
             self.__update__(k,v)
+        self.recalculate()
         return
 
     def getDelta(self, *, base_file: str = None)->dict[str,dict[str,any]]:
