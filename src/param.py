@@ -99,3 +99,25 @@ class ParameterSet(Mixin):
                 f.write(f'''<tr><td class="key">{k}</td><td class="old">{delta[k]['old']}</td><td class="new">{delta[k]['new']}</td></tr>''')
             f.write('</table></body>')
         return 
+    
+    def saveHtml(self, filename: str, *, keys= [] ):
+        all_items = self.__flat_json__()
+        items = {}
+        if len(keys)==0:
+            items = all_items
+        else:
+            for k in keys:
+                items[k] = all_items.get(k,"unavailable")
+        with open(filename, 'w') as f:
+            f.write(r'''<html><head><style>
+            .key,.old,.new{padding: 0.5rem;}
+            .key{font-weight: bold; }
+            .old{background-color: #f8dfda; color: #dc3545;}
+            .new{background-color: #d4edda; color: #28a745;}
+            </style></head>''')
+            f.write('<body><table>')
+            f.write(f'''<tr><th>Key</th><th>Value</th></tr>''')
+            for k in items:
+                f.write(f'''<tr><td class="key">{k}</td><td class="">{items[k]}</td></tr>''')
+            f.write('</table></body>')
+        return 
