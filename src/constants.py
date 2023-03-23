@@ -6,7 +6,7 @@ zero = np.float64(0.0)
 
 
 class ConstantsParam(Mixin):
-    Keys = ['tau_r', 'tau_n','tau_y', 'a', 'b', 'd', 'g_I', 'c_1', 'c_0', 'r_0', 'J_0', 'ratio']
+    Keys = ['tau_r', 'tau_n','tau_y', 'a', 'b', 'd', 'g_I', 'c_1', 'c_0', 'r_0', 'J_0']
 
     def __init__(self, d: dict, *, delta=False) -> None:
         self.__delta = delta
@@ -23,5 +23,4 @@ class ConstantsParam(Mixin):
         self.c_0 = self.__npget__(d, 'c_0', delta=self.__delta)
         self.r_0 = self.__npget__(d, 'r_0', delta=self.__delta)
         self.J_0 = self.__npget__(d, 'J_0', delta=self.__delta)
-        self.ratio = self.__npget__(d, 'ratio', delta=self.__delta)
         return

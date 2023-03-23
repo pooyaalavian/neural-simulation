@@ -47,9 +47,9 @@ class ModelBase(State):
                 n_dest._input += n_src.s * p.J.get(src, dest)
                 n_dest._input += n_src.s_ampa * p.J_ampa.get(src, dest)
 
-        # adjust for p.constants.ratio
-        self.sst1._input *= (1-p.constants.ratio)
-        self.sst2._input *= (1-p.constants.ratio)
+            # adjust for opto manipulations
+            n_dest._input *= (1-p_dest.opto)
+            
         logging.debug(
             f'  input:   {arr2str([getattr(self,x)._input for x in self.Nodes])}')
         return

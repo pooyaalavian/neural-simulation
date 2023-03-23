@@ -79,7 +79,7 @@ class NodeParamIext(Mixin):
 
 class NodeParam(Mixin):
     Keys = ['tau', 'sigma', 'gamma','gamma_r', 'tau_ampa',
-            'sigma_ampa', 'gamma_ampa', 'I_back', 'I_ext']
+            'sigma_ampa', 'gamma_ampa','opto', 'I_back', 'I_ext']
 
     def __init__(self, d: dict, *, delta=False):
         self.__delta = delta
@@ -92,6 +92,7 @@ class NodeParam(Mixin):
         self.tau_ampa = self.__npget__(d, 'tau_ampa', delta=self.__delta)
         self.sigma_ampa = self.__npget__(d, 'sigma_ampa', delta=self.__delta)
         self.gamma_ampa = self.__npget__(d, 'gamma_ampa', delta=self.__delta)
+        self.opto = self.__npget__(d, 'opto', delta=self.__delta)
         self.I_back = NodeParamIback(d.get('I_back', None), delta=self.__delta)
         self.I_ext = NodeParamIext(d.get('I_ext', None), delta=self.__delta)
         return
