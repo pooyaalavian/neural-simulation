@@ -62,57 +62,52 @@ def run(t_end, changes = {}, *, dt=0.001, path:Path=None):
     print(f'elapsed time: {t_end - t_start} seconds')
     return t, list(map(toState, res))
 
-
+experiments = [{"sst1.I_back.dc": 0.2,"sst2.I_back.dc": 0.2, "constants.ratio":0.5}]
 if __name__ == '__main__':
-    exp = 'my-exp'
-    dt = datetime.now()
-    folder = Path(f'img/{exp}/{dt.strftime("%Y-%m-%d")}/{dt.strftime("%H%M%S")}')
-    folder.mkdir(parents=True)
-    t, res = run(10, {
-        'exc1.sigma':60,
-        # 'J.exc1.exc2':0.03,
-        # 'J.exc2.exc1':0.03,
-        'exc1.I_back.frequency':0.5,
-        'exc2.I_back.frequency':2.0,
-    } , dt=0.001, path=folder)
-    # exc1_r = np.array([x.exc1.r for x in res])
-    # exc2_r = np.array([x.exc2.r for x in res])
-    # pv_r = np.array([x.pv.r for x in res])
-    plots = [
-        Plot(['exc1.r'], t_start=0, t_end=10, title='Exc 1 Firing Rate', file=folder / 'r1.svg'),
-        Plot(['exc2.r'], t_start=0, t_end=10, title='Exc 2 Firing Rate', file=folder / 'r2.svg'),
-        Plot(['pv.r'],   t_start=0, t_end=10, title='PV Firing Rate',    file=folder / 'pv.svg'),
-        Plot(['sst1.r'], t_start=0, t_end=10, title='SST 1 Firing Rate', file=folder / 's1.svg'),
-        Plot(['sst2.r'], t_start=0, t_end=10, title='SST 2 Firing Rate', file=folder / 's2.svg'),
-        Plot(['vip1.r'], t_start=0, t_end=10, title='VIP 1 Firing Rate', file=folder / 'v1.svg'),
-        Plot(['vip2.r'], t_start=0, t_end=10, title='VIP 2 Firing Rate', file=folder / 'v2.svg'),
-        # Plot(['exc1.r'], t_start=2, t_end=3, title='Exc 1 Firing Rate', file=f'{folder}/r1-before.png'),
-        # Plot(['exc1.r'], t_start=5, t_end=6, title='Exc 1 Firing Rate', file=f'{folder}/r1-during.png'),
-        # Plot(['exc1.r'], t_start=7, t_end=8, title='Exc 1 Firing Rate', file=f'{folder}/r1-after.png'),
-        # Plot(['exc1.r','exc2.r','pv.r'], t_start=3, t_end=7, title='Exc 1, 2, PV Firing Rate', file=f'{folder}/r1-r2.png'),
-    ]
-    for p in plots:
-        p(t,res)
-    plots_ref = [p.file.name for p in plots]
-    plots_ref = [f'<div class="res-img"><img src="{p}"/></div>' for p in plots_ref]
-    plots_ref = '\n'.join(plots_ref)
+    exp = 'test'
+    for e in range(len(experiments)): 
+        dt = datetime.now()
+        folder = Path(f'img/{exp}/{dt.strftime("%Y-%m-%d")}/{dt.strftime("%H%M%S")}')
+        folder.mkdir(parents=True)
+        t, res = run(10, changes = experiments[e] , dt=0.001, path=folder)
+        # exc1_r = np.array([x.exc1.r for x in res])
+        # exc2_r = np.array([x.exc2.r for x in res])
+        # pv_r = np.array([x.pv.r for x in res])
+        plots = [
+            Plot(['exc1.r'], t_start=0, t_end=10, title='Exc 1 Firing Rate', file=folder / 'r1.svg'),
+            Plot(['exc2.r'], t_start=0, t_end=10, title='Exc 2 Firing Rate', file=folder / 'r2.svg'),
+            Plot(['pv.r'],   t_start=0, t_end=10, title='PV Firing Rate',    file=folder / 'pv.svg'),
+            Plot(['sst1.r'], t_start=0, t_end=10, title='SST 1 Firing Rate', file=folder / 's1.svg'),
+            Plot(['sst2.r'], t_start=0, t_end=10, title='SST 2 Firing Rate', file=folder / 's2.svg'),
+            Plot(['vip1.r'], t_start=0, t_end=10, title='VIP 1 Firing Rate', file=folder / 'v1.svg'),
+            Plot(['vip2.r'], t_start=0, t_end=10, title='VIP 2 Firing Rate', file=folder / 'v2.svg'),
+            # Plot(['exc1.r'], t_start=2, t_end=3, title='Exc 1 Firing Rate', file=f'{folder}/r1-before.png'),
+            # Plot(['exc1.r'], t_start=5, t_end=6, title='Exc 1 Firing Rate', file=f'{folder}/r1-during.png'),
+            # Plot(['exc1.r'], t_start=7, t_end=8, title='Exc 1 Firing Rate', file=f'{folder}/r1-after.png'),
+            # Plot(['exc1.r','exc2.r','pv.r'], t_start=3, t_end=7, title='Exc 1, 2, PV Firing Rate', file=f'{folder}/r1-r2.png'),
+        ]
+        for p in plots:
+            p(t,res)
+        plots_ref = [p.file.name for p in plots]
+        plots_ref = [f'<div class="res-img"><img src="{p}"/></div>' for p in plots_ref]
+        plots_ref = '\n'.join(plots_ref)
 
-    html = folder / 'results.html'
-    html.write_text(f'''<html>
-<head>
-    <title> Summary </title>
-    <style>
-    .images {{display: flex; flex-wrap: wrap;}}
-    .res-img {{}}
-    </style>
-</head>
-<body>
-<section id="inputs">
-    <iframe src="params_delta.html" onload='javascript:(function(o){{o.style.height=o.contentWindow.document.body.scrollHeight+"px";}}(this));' 
-    style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
-</section>
-<section id="results">
-    <div class="images">{plots_ref}</div>
-</section>
-</body>
-</html>''')
+        html = folder / 'results.html'
+        html.write_text(f'''<html>
+    <head>
+        <title> Summary </title>
+        <style>
+        .images {{display: flex; flex-wrap: wrap;}}
+        .res-img {{}}
+        </style>
+    </head>
+    <body>
+    <section id="inputs">
+        <iframe src="params_delta.html" onload='javascript:(function(o){{o.style.height=o.contentWindow.document.body.scrollHeight+"px";}}(this));' 
+        style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
+    </section>
+    <section id="results">
+        <div class="images">{plots_ref}</div>
+    </section>
+    </body>
+    </html>''')

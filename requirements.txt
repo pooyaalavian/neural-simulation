@@ -7,3 +7,4 @@ pytictoc
 matplotlib
 sdeint
 autopep8
+pactools
