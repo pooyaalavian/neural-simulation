@@ -3,15 +3,17 @@ import numpy as np
 from src.model_base import ModelBase
 import os 
 from pathlib import Path
-
+from pactools import Comodulogram, REFERENCES
+from pactools import simulate_pac
 
 class Plot:
-    def __init__(self, addresses, *, t_start=None, t_end=None, title: str = None, file: Path = None):
+    def __init__(self, addresses, *, t_start=None, t_end=None, title: str = None, file: Path = None , plot_type: str = "timeseries"):
         self.addresses = addresses
         self.t_start = t_start
         self.t_end = t_end
         self.title = title
         self.file = file
+        self.plot_type = plot_type
         self.check_path()
         return
 
@@ -19,10 +21,13 @@ class Plot:
         self.file.parent.mkdir(exist_ok=True)
 
     def __call__(self, t: np.array, res: list[ModelBase]):
-        self.plot(t, res)
+        if self.plot_type == "timeseries":
+            self.plot(t, res)
+        elif self.plot_type == "pac":
+            self.plot_pac(t,res)
         return
-
-    def plot(self, t: np.array, res: list[ModelBase]):
+    
+    def get_traces(self, t: np.array, res: list[ModelBase]):
         traces = []
         if self.t_start is None:
             self.t_start = t[0]
@@ -37,13 +42,45 @@ class Plot:
             for key in ad.split('.'):
                 tmp = [getattr(x, key) for x in tmp]
             traces.append(np.array(tmp))
+        return (t[_t],traces)
+
+    def plot(self, t: np.array, res: list[ModelBase]):
+        t_t,traces = self.get_traces(t,res) 
         for tr in traces:
-            plt.plot(t[_t], tr)
+            plt.plot(t_t, tr)
         if self.title is not None:
             plt.title(self.title)
         self.save()
         return
-    
+
+    def plot_pac (self, t: np.array, res: list[ModelBase]):    
+        t_t,traces = self.get_traces(t,res) 
+        s = traces[0]
+        fs=1/(t[1]-t[0])
+        low_fq_range = np.linspace(1, 7, 40)
+        methods = [
+            'ozkurt', 'canolty', 'tort', 'penny', 'vanwijk', 'duprelatour', 'colgin',
+            'sigl', 'bispectrum'
+        ]
+        low_fq_width = 1.0  # Hz
+
+        n_lines = 3
+        n_columns = int(np.ceil(len(methods) / float(n_lines)))
+
+        fig, axs = plt.subplots(
+        n_lines, n_columns, figsize=(4 * n_columns, 3 * n_lines))
+        axs = axs.ravel()
+        for ax, method in zip(axs, methods):
+            print('%s... ' % (method, ))
+            estimator = Comodulogram(fs=fs, low_fq_range=low_fq_range,
+                                    low_fq_width=low_fq_width, method=method,
+                                    progress_bar=False)
+            estimator.fit(s)
+            estimator.plot(titles=[REFERENCES[method]], axs=[ax])
+            ax.set_ylim([0, 100])
+        
+        self.save()
+
     def save(self):
         if self.file is None:
             plt.show()
