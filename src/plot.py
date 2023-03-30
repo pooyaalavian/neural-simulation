@@ -21,13 +21,13 @@ class Plot:
     def check_path(self):
         self.file.parent.mkdir(exist_ok=True)
 
-    def __call__(self, t: np.array, res: list[ModelBase]):
+    def __call__(self, t: np.array, res: list[ModelBase],**kwargs):
         if self.plot_type == "timeseries":
-            self.plot(t, res)
+            self.plot(t, res,**kwargs)
         elif self.plot_type == "pac":
-            self.plot_pac(t,res)
+            self.plot_pac(t,res,**kwargs)
         elif self.plot_type == "fft":
-            self.plot_fft(t,res)
+            self.plot_fft(t,res,**kwargs)
         return
 
     def get_traces(self, t: np.array, res: list[ModelBase]):
@@ -85,14 +85,17 @@ class Plot:
         self.save()
         return
 
-    def plot_fft(self, t:np.array, res: list[ModelBase]):
+    def plot_fft(self, t:np.array, res: list[ModelBase],max_fq=50):
         t_t, traces = self.get_traces(t, res)
         s = traces[0]
         dt = t[1]-t[0]
         N = len(s)
         yf = fft(s)
         xf = fftfreq(N, dt)[:N//2]
-        plt.plot(xf, 2.0/N * np.abs(yf[0:N//2]))
+        #get frequencies up to 100 Hz
+        limit = np.where(xf<=max_fq)
+        yf = yf[0:N//2]
+        plt.plot(xf[limit], 2.0/N * np.abs(yf[limit]))
         self.save()
         return
     
