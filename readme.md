@@ -63,13 +63,4 @@ p.saveDelta('new-param.json')
 ```
 
 
-## TODO:
-1. put opto_ratio as a parameter for all neuronal populations
-2. make sure to add all new libraries to the requirements
-3. add the new trace function to the code base
-4. add PAC
-5. ask pooya how does the type of background param work 
-6. preferred set of parameters always being printed
-7. issue: not all changes fit in the html file
-
 
