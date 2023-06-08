@@ -85,20 +85,38 @@ class Plot:
         self.save()
         return
 
-    def plot_fft(self, t:np.array, res: list[ModelBase],max_fq=50):
+    def plot_fft(self, t:np.array, res: list[ModelBase],min_fq=1, max_fq=50):
         t_t, traces = self.get_traces(t, res)
         s = traces[0]
         dt = t[1]-t[0]
         N = len(s)
         yf = fft(s)
         xf = fftfreq(N, dt)[:N//2]
-        #get frequencies up to 100 Hz
-        limit = np.where(xf<=max_fq)
+        limit = np.where((xf<=max_fq)& (xf>=min_fq))
         yf = yf[0:N//2]
         plt.plot(xf[limit], 2.0/N * np.abs(yf[limit]))
         self.save()
         return
     
+    def max_gamma_power(self, t:np.array, res: list[ModelBase],min_fq=10, max_fq=50):
+        t_t, traces = self.get_traces(t, res)
+        s = traces[0]
+        dt = t[1]-t[0]
+        N = len(s)
+        yf = fft(s)
+        xf = fftfreq(N, dt)[:N//2]
+        limit = np.where((xf<=max_fq)& (xf>=min_fq))
+        yf = yf[0:N//2]
+        max_ind = xf.index(max(xf[limit]))
+        Max_freq = max(xf[limit])
+        max_freq_power = yf[max_ind]
+        return Max_freq, max_freq_power
+        # input between 0 and 1 and 10 values
+        # average over 5 up to 20 trials
+        # each trial throw away 5s and simulate for a 100s (because its gamma maybe you can do a bit shorter)
+        # dt one order of magnitude smaller than taus so 0.1 ms
+        
+        
     def save(self):
         if self.file is None:
             plt.show()

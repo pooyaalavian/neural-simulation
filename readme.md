@@ -62,5 +62,12 @@ If you want to save only the changes compared to default, use:
 p.saveDelta('new-param.json')
 ```
 
+TODO:
+1. get new maps from abhirup and try to find the oscillations again
+2. run pac experiments on the new ones
 
-
+# scale down to one E and one I
+# turn off noise
+# play with AMPA projections not NMDA
+# until you get stable focus
+# get the power vs input plot in this regime
