@@ -1,0 +1,279 @@
+{
+    "exc1": {
+      "tau": 0.0288,
+      "sigma": 6.0,
+      "gamma": 2.675,
+      "gamma_r": 1.0,
+      "tau_ampa": 0.00096,
+      "sigma_ampa": 0.0,
+      "gamma_ampa": 2.075,
+      "opto": 0.0,
+      "I_back": {
+        "type": "sin",
+        "amplitude": 0.0,
+        "frequency": 4,
+        "phase": 0,
+        "dc": 0.45
+      },
+      "I_ext": {
+        "type": "rectangular",
+        "height": 0.0,
+        "t_start": 4.0,
+        "t_end": 6.0
+      }
+    },
+    "exc2": {
+      "tau": 0.0288,
+      "sigma": 6.0,
+      "gamma": 2.675,
+      "gamma_r": 1.0,
+      "tau_ampa": 0.00096,
+      "sigma_ampa": 0.0,
+      "gamma_ampa": 2.075,
+      "opto": 0.0,
+      "I_back": {
+        "type": "sin",
+        "amplitude": 0.0,
+        "frequency": 4.0,
+        "phase": 0.0,
+        "dc": 0.45
+      },
+      "I_ext": {
+        "type": "rectangular",
+        "height": 0.0,
+        "t_start": 4.0,
+        "t_end": 6.0
+      }
+    },
+    "pv": {
+      "tau": 0.0024,
+      "sigma": 2.5,
+      "gamma": 4.1625,
+      "gamma_r": 1.0,
+      "opto": 0.0,
+      "I_back": {
+        "type": "dc",
+        "amplitude": 0.0,
+        "frequency": 0.0,
+        "phase": 0.0,
+        "dc": 0.35
+      },
+      "I_ext": {
+        "type": "rectangular",
+        "height": 0.0,
+        "t_start": 4.0,
+        "t_end": 6.0
+      }
+    },
+    "sst1": {
+      "tau": 0.0072,
+      "sigma": 2.5,
+      "gamma": 2.075,
+      "gamma_r": 1.0,
+      "opto": 0.0,
+      "I_back": {
+        "type": "dc",
+        "amplitude": 0.0,
+        "frequency": 0.0,
+        "phase": 0.0,
+        "dc": 0.15
+      }
+    },
+    "sst2": {
+      "tau": 0.0072,
+      "sigma": 2.5,
+      "gamma": 2.075,
+      "gamma_r": 1.0,
+      "opto": 0.0,
+      "I_back": {
+        "type": "dc",
+        "amplitude": 0.0,
+        "frequency": 0.0,
+        "phase": 0.0,
+        "dc": 0.15
+      }
+    },
+    "vip1": {
+      "tau": 0.0072,
+      "sigma": 2.5,
+      "gamma": 2.075,
+      "gamma_r": 1.0,
+      "opto": 0.0,
+      "I_back": {
+        "type": null,
+        "amplitude": 0.0,
+        "frequency": 0.0,
+        "phase": 0.0,
+        "dc": 0.0
+      },
+      "I_ext": {
+        "type": "dc",
+        "height": 0.2,
+        "t_start": 0.0,
+        "t_end": 0.0
+      }
+    },
+    "vip2": {
+      "tau": 0.0072,
+      "sigma": 2.5,
+      "gamma": 2.075,
+      "gamma_r": 1.0,
+      "opto": 0.0,
+      "I_back": {
+        "type": null,
+        "amplitude": 0.0,
+        "frequency": 0.0,
+        "phase": 0.0,
+        "dc": 0.0
+      },
+      "I_ext": {
+        "type": "dc",
+        "height": 0.2,
+        "t_start": 0.0,
+        "t_end": 0.0
+      }
+    },
+    "J": {
+      "exc1": {
+        "exc1": 0.4813,
+        "exc2": 0.0107,
+        "pv": -0.4,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "exc2": {
+        "exc1": 0.0107,
+        "exc2": 0.4813,
+        "pv": -0.4,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "pv": {
+        "exc1": 0.1135,
+        "exc2": 0.1135,
+        "pv": -0.12,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "sst1": {
+        "exc1": 0.0,
+        "exc2": 0.0,
+        "pv": 0.0,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "sst2": {
+        "exc1": 0.0,
+        "exc2": 0.0,
+        "pv": 0.0,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "vip1": {
+        "exc1": 0.0,
+        "exc2": 0.0,
+        "pv": 0.0,
+        "sst1": -0.35,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "vip2": {
+        "exc1": 0.0,
+        "exc2": 0.0,
+        "pv": 0.0,
+        "sst1": 0.0,
+        "sst2": -0.35,
+        "vip1": 0.0,
+        "vip2": 0.0
+      }
+    },
+    "J_ampa": {
+      "exc1": {
+        "exc1": 3.8,
+        "exc2": 1.75,
+        "pv": 0.0,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "exc2": {
+        "exc1": 1.75,
+        "exc2": 3.8,
+        "pv": 0.0,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "pv": {
+        "exc1": 3.2,
+        "exc2": 3.2,
+        "pv": 0.0,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "sst1": {
+        "exc1": 0.0,
+        "exc2": 0.0,
+        "pv": 0.0,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "sst2": {
+        "exc1": 0.0,
+        "exc2": 0.0,
+        "pv": 0.0,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "vip1": {
+        "exc1": 0.0,
+        "exc2": 0.0,
+        "pv": 0.0,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      },
+      "vip2": {
+        "exc1": 0.0,
+        "exc2": 0.0,
+        "pv": 0.0,
+        "sst1": 0.0,
+        "sst2": 0.0,
+        "vip1": 0.0,
+        "vip2": 0.0
+      }
+    },
+    "constants": {
+      "tau_r": 0.002,
+      "tau_n": 0.00096,
+      "tau_y": 0.01,
+      "a": 135.0,
+      "b": 54.0,
+      "d": 0.308,
+      "g_I": 4.0,
+      "c_1": 615.0,
+      "c_0": 177.0,
+      "r_0": 5.5,
+      "J_0":0.2112
+    }
+  }

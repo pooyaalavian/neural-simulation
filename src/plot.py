@@ -98,19 +98,21 @@ class Plot:
         self.save()
         return
     
-    def max_gamma_power(self, t:np.array, res: list[ModelBase],min_fq=10, max_fq=50):
+    def max_gamma_power(self, t:np.array, res: list[ModelBase],min_fq=10, max_fq=100):
         t_t, traces = self.get_traces(t, res)
         s = traces[0]
         dt = t[1]-t[0]
         N = len(s)
         yf = fft(s)
         xf = fftfreq(N, dt)[:N//2]
-        limit = np.where((xf<=max_fq)& (xf>=min_fq))
         yf = yf[0:N//2]
-        max_ind = xf.index(max(xf[limit]))
-        Max_freq = max(xf[limit])
-        max_freq_power = yf[max_ind]
-        return Max_freq, max_freq_power
+        limit = np.where((xf<=50)& (xf>=20))
+        x_new= xf[limit]
+        y_new = 2.0/N * np.abs(yf[limit])
+        max_ind = np.argmax(y_new)
+        max_freq = x_new[max_ind]
+        max_freq_power = y_new[max_ind]
+        return max_freq, max_freq_power
         # input between 0 and 1 and 10 values
         # average over 5 up to 20 trials
         # each trial throw away 5s and simulate for a 100s (because its gamma maybe you can do a bit shorter)
